@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/ListItemHorizontalPadding"
+        android:paddingTop="@dimen/ListItemVerticalPadding"
+        android:paddingEnd="@dimen/ListItemHorizontalPadding"
+        android:paddingBottom="@dimen/ListItemVerticalPadding"
+        android:weightSum="2">
+
+        <TextView
+            android:id="@+id/StartTimeValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            tools:text="2018-01-11T17:55" />
+
+        <View
+            android:layout_width="@dimen/ListItemColumnPadding"
+            android:layout_height="0dp" />
+
+        <TextView
+            android:id="@+id/EndTimeValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            tools:text="2018-01-11T22:13" />
+
+        <TextView
+            android:id="@+id/MoreIconText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/MoreIcon"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ListItemRowRuleHeight"
+        android:background="@color/colorAccent" />
+</LinearLayout>

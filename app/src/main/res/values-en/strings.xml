@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Time Tracking</string>
+    <string name="LabelStartTime">Start Time</string>
+    <string name="LabelEndTime">End Time</string>
+    <string name="ButtonStart">Start</string>
+    <string name="ButtonEnd">Stop</string>
+    <string name="MenuListData">List</string>
+    <string name="ColumnHeaderStartTime">Start Time</string>
+    <string name="ColumnHeaderEndTime">End Time</string>
+    <string name="TimeDataActivityTitle">Listing</string>
+    <string name="MenuItemDelete">Delete</string>
+    <string name="DialogTitleDeleteItem">Delete item</string>
+    <string name="DialogMessageDeleteItem">Should item be deleted?</string>
+    <string name="ButtonCancel">Cancel</string>
+    <string name="ButtonDelete">Delete</string>
+</resources>

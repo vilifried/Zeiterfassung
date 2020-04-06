@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Zeiterfassung</string>
+    <string name="LabelStartTime">Startzeit:</string>
+    <string name="LabelEndTime">Endzeit:</string>
+    <string name="ButtonStart">Starten</string>
+    <string name="ButtonEnd">Beenden</string>
+    <string name="MenuListData">Auflistung</string>
+    <string name="ColumnHeaderStartTime">Startzeit</string>
+    <string name="ColumnHeaderEndTime">Endzeit</string>
+    <string name="TimeDataActivityTitle">Auflistung</string>
+    <string name="MenuItemDelete">Löschen</string>
+    <string name="MoreIcon" translatable="false">" ⋮ "</string>
+    <string name="DialogTitleDeleteItem">Eintrag löschen</string>
+    <string name="DialogMessageDeleteItem">Soll der Eintrag jetzt gelöscht werden?</string>
+    <string name="ButtonCancel">Abbrechen</string>
+    <string name="ButtonDelete">Löschen</string>
+</resources>
