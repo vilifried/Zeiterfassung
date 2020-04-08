@@ -8,4 +8,6 @@
     <dimen name="ListItemVerticalPadding">8dp</dimen>
     <dimen name="ListItemRowRuleHeight">2dp</dimen>
     <dimen name="ListHeaderRuleHeight">4dp</dimen>
+    <dimen name="ColumnPadding">8dp</dimen>
+    <dimen name="RowPaddingTop">8dp</dimen>
 </resources>

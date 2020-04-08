@@ -14,4 +14,17 @@
     <string name="DialogMessageDeleteItem">Should item be deleted?</string>
     <string name="ButtonCancel">Cancel</string>
     <string name="ButtonDelete">Delete</string>
+    <string name="MenuExport">Export</string>
+    <string name="DialogTitleExport">Export</string>
+    <string name="ExportNotificationTitle">CSV Export</string>
+    <string name="DialogMessageExport">Time data entries are exported as csv file</string>
+    <string name="ExportNotificationMessage">Time data entries are exported as csv file</string>
+    <string name="ExportNotificationChannel">CSV Export</string>
+    <string name="ExportNotificationChannelDescription">Export of time data as csv file</string>
+    <string name="ExportNotificationFinischMessage">Export finished</string>
+    <string name="EditDataActivityTitle">Edit</string>
+    <string name="LabelPause">Pause:</string>
+    <string name="LabelComment">Comment:</string>
+    <string name="MenuItemEdit">Edit</string>
+
 </resources>

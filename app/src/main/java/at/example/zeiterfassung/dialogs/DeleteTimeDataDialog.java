@@ -70,8 +70,8 @@ public class DeleteTimeDataDialog extends AppCompatDialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Löschfunktion in Activity aufrufen
-                        if (getActivity() instanceof IDeleteItemListener) {
-                            ((IDeleteItemListener) getActivity()).deleteItem(_id, _position);
+                        if (getActivity() instanceof IItemActionListener) {
+                            ((IItemActionListener) getActivity()).deleteItem(_id, _position);
                         }
 
                         // Dialog schließen

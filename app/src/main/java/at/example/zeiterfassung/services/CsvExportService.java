@@ -1,12 +1,17 @@
-package at.example.zeiterfassung.utils;
+package at.example.zeiterfassung.services;
 
-import android.app.Dialog;
-import android.app.ProgressDialog;
+import android.app.IntentService;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
-import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
+
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -16,76 +21,62 @@ import java.io.IOException;
 import at.example.zeiterfassung.R;
 import at.example.zeiterfassung.db.TimeDataContract;
 
+public class CsvExportService extends IntentService {
+    private static final String _NOTIFICATION_CHANNEL = "Export";
+    private static final int _NOTIFICATION_ID = 500;
 
-public class CsvExporter extends AsyncTask<Void, Integer, Void> {
-    private final Context _context;
-    private ProgressDialog _dialog = null;
-
-    public CsvExporter(Context context) {
-        _context = context;
+    /**
+     * Creates an IntentService.  Invoked by your subclass's constructor.
+     */
+    public CsvExportService() {
+        super("CSVExporter");
     }
 
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
 
-        // Dialog initialisieren
-        _dialog = new ProgressDialog(_context);
-        // Dialog Title
-        _dialog.setTitle(R.string.DialogTitleExport);
-        // Dialog Text
-        _dialog.setMessage(_context.getString(R.string.DialogMessageExport));
-        // Schließen durch "daneben" Tippen, verhindern
-        _dialog.setCanceledOnTouchOutside(false);
-        // Abbrechen durch den Zurückbutton
-        _dialog.setCancelable(true);
-        // Typ des Dialoges festlegen (Allgemein oder Fortschritt)
-        _dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        // Abbrechen Button hinzufügen
-        _dialog.setButton(Dialog.BUTTON_NEGATIVE,
-                _context.getString(R.string.ButtonCancel),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // AsncTask mitteielen, dass die Aktion abgebrochen werden soll
-                        cancel(false);
-                    }
-                });
-
-        // Dialog anzeigen
-        _dialog.show();
-    }
-
-    @Override
-    protected void onPostExecute(Void aVoid) {
-        super.onPostExecute(aVoid);
-
-        // Prüfen, ob Dialog angezeigt wird
-        if (_dialog != null && _dialog.isShowing()) {
-            // Schließen des Dialoges
-            _dialog.dismiss();
-            _dialog = null;
+    private void createChannel() {
+        // Versionsweiche
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // OS Service für Benachrichtigungen holen
+            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            // Gruppe definieren
+            NotificationChannel channel = new NotificationChannel(
+                    _NOTIFICATION_CHANNEL, // Eindeutiger Name der Gruppe
+                    getString(R.string.ExportNotificationChannel), // Titel der gruppe
+                    NotificationManager.IMPORTANCE_DEFAULT); // Wichtigkeit
+            // Beschreibung für die Grußße
+            channel.setDescription(getString(R.string.ExportNotificationChannelDescription));
+            // Sichtbarkeit der Gruppe auf dem Sperrbildschirm
+            channel.setLockscreenVisibility(NotificationCompat.VISIBILITY_PRIVATE);
+            // Gruppe erzeugen
+            manager.createNotificationChannel(channel);
         }
     }
 
-    @Override
-    protected void onProgressUpdate(Integer... values) {
-        super.onProgressUpdate(values);
+    private NotificationCompat.Builder createNotification() {
+        // Create notification
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), _NOTIFICATION_CHANNEL)
+                .setContentTitle(getString(R.string.ExportNotificationTitle))
+                .setContentText(getString(R.string.ExportNotificationMessage))
+                .setSmallIcon(R.drawable.ic_file_download)
+                .setAutoCancel(true);
 
-        // Prüfen auf den Inhalt
-        if (_dialog != null && values != null && values.length == 1) {
-            // Weitergabe des aktuellen Standes an das Dialog
-            _dialog.setProgress(values[0]);
-        }
+        return builder;
     }
 
     @Override
-    protected Void doInBackground(Void... voids) {
+    protected void onHandleIntent(@Nullable Intent intent) {
+        // System Service für Benachrichtigungen abfragen
+        NotificationManagerCompat notifyManager = NotificationManagerCompat.from(getApplicationContext());
+        // Gruppe anlegen
+        createChannel();
+        // Benachrichtigung vorfüllen
+        NotificationCompat.Builder builder = createNotification();
+
         Cursor data = null;
 
         try {
             // Daten über Content Provider abfragen
-            data = _context.getContentResolver()
+            data = getBaseContext().getContentResolver()
                     .query(TimeDataContract.TimeData.CONTENT_URI,
                             null,
                             null,
@@ -94,22 +85,22 @@ public class CsvExporter extends AsyncTask<Void, Integer, Void> {
 
             int dataCount = data == null ? 0 : data.getCount();
 
-            if (dataCount == 0 || isCancelled()) {
+            if (dataCount == 0) {
                 // Nichts weiter machen, wenn keine Daten vorhanden
-                return null;
+                return;
             }
 
-            // Maximalen Wert für den Dialog setzen
-            if (_dialog != null) {
-                _dialog.setMax(dataCount + 1); // +1 für die Spaltenzeile in CSV
-            }
+            // Export starten, mit richtigen Max-Wert
+            builder.setProgress(dataCount + 1, 0, false);
+            // Benachrichtigung veröffentlichen
+            notifyManager.notify(_NOTIFICATION_ID, builder.build());
 
             // Ordner für externe Daten
             File externalStorage = Environment.getExternalStorageDirectory();
 
             // Prüfen, ob externe Daten geschrieben werden können (SD Karte nur Read Only oder voll)
             if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-                return null;
+                return;
             }
 
             // Unterordner für unser Export
@@ -144,8 +135,12 @@ public class CsvExporter extends AsyncTask<Void, Integer, Void> {
 
                 writer.append(line);
 
+                // Ausgabe der Spaltennamen
+                builder.setProgress(dataCount + 1, 1, false);
+                notifyManager.notify(_NOTIFICATION_ID, builder.build());
+
                 // Zeilen mit Daten ausgeben
-                while (data.moveToNext() && !isCancelled()) {
+                while (data.moveToNext()) {
                     // Neue Zeile
                     writer.newLine();
 
@@ -174,8 +169,9 @@ public class CsvExporter extends AsyncTask<Void, Integer, Void> {
 
                     writer.append(line);
 
-                    // Fortschritt melden
-                    publishProgress(data.getPosition() + 2); // +1 für '0' basierte Position + 1 für Überschriften
+                    // Ausgabe der Zeilen.
+                    builder.setProgress(dataCount + 1, data.getPosition() + 2, false);
+                    notifyManager.notify(_NOTIFICATION_ID, builder.build());
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -189,18 +185,16 @@ public class CsvExporter extends AsyncTask<Void, Integer, Void> {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-                // Datei löschen, falls Benutzerabbruch
-                if (isCancelled() && exportFile.exists()) {
-                    exportFile.delete();
-                }
             }
-
-            return null;
         } finally {
             if (data != null) {
                 data.close();
             }
+
+            // Export abgeschlossen
+            builder.setProgress(0, 0, false)
+                    .setContentText(getString(R.string.ExportNotificationFinischMessage));
+            notifyManager.notify(_NOTIFICATION_ID, builder.build());
         }
     }
 }

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingStart="@dimen/ActivityHorizontalPadding"
+    android:paddingTop="@dimen/ActivityVerticalPadding"
+    android:paddingEnd="@dimen/ActivityHorizontalPadding"
+    android:paddingBottom="@dimen/ActivityVerticalPadding"
+    tools:context=".EditDataActivity">
+
+    <TextView
+        android:id="@+id/LabelStartTime"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/LabelStartTime"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/StartDateValue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/RowPaddingTop"
+        android:layout_marginEnd="@dimen/ColumnPadding"
+        android:inputType="date"
+        app:layout_constraintEnd_toStartOf="@+id/CenterHelper"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/LabelStartTime" />
+
+    <EditText
+        android:id="@+id/StartTimeValue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/ColumnPadding"
+        android:layout_marginTop="@dimen/RowPaddingTop"
+        android:inputType="time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/CenterHelper"
+        app:layout_constraintTop_toBottomOf="@+id/LabelStartTime" />
+
+    <TextView
+        android:id="@+id/LabelEndTime"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/RowPaddingTop"
+        android:text="@string/LabelEndTime"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/StartDateValue" />
+
+    <EditText
+        android:id="@+id/EndDateValue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/RowPaddingTop"
+        android:layout_marginEnd="@dimen/ColumnPadding"
+        android:inputType="date"
+        app:layout_constraintEnd_toStartOf="@+id/CenterHelper"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/LabelEndTime" />
+
+    <EditText
+        android:id="@+id/EndTimeValue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/ColumnPadding"
+        android:layout_marginTop="@dimen/RowPaddingTop"
+        android:inputType="time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/CenterHelper"
+        app:layout_constraintTop_toBottomOf="@+id/LabelEndTime" />
+
+    <TextView
+        android:id="@+id/LabelPause"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/RowPaddingTop"
+        android:text="@string/LabelPause"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/EndDateValue" />
+
+    <EditText
+        android:id="@+id/PauseValue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/RowPaddingTop"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/LabelPause" />
+
+    <TextView
+        android:id="@+id/LabelComment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/RowPaddingTop"
+        android:text="@string/LabelComment"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/PauseValue" />
+
+    <EditText
+        android:id="@+id/CommentValue"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/RowPaddingTop"
+        android:ems="10"
+        android:gravity="top"
+        android:inputType="textMultiLine"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/LabelComment" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/CenterHelper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+    
+
+</androidx.constraintlayout.widget.ConstraintLayout>

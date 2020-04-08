@@ -14,4 +14,16 @@
     <string name="DialogMessageDeleteItem">Soll der Eintrag jetzt gelöscht werden?</string>
     <string name="ButtonCancel">Abbrechen</string>
     <string name="ButtonDelete">Löschen</string>
+    <string name="MenuExport">Export</string>
+    <string name="DialogTitleExport">Export</string>
+    <string name="DialogMessageExport">Daten werden als CSV-Datei exportiert.</string>
+    <string name="ExportNotificationTitle">CSV Export</string>
+    <string name="ExportNotificationMessage">Daten weren als CSV-Datei exportiert</string>
+    <string name="ExportNotificationChannel">CSV Export</string>
+    <string name="ExportNotificationChannelDescription">Export der Daten als CSV-Datei</string>
+    <string name="ExportNotificationFinischMessage">CSV Export abgeschlossen</string>
+    <string name="EditDataActivityTitle">Bearbeiten</string>
+    <string name="LabelPause">Pause:</string>
+    <string name="LabelComment">Kommentar:</string>
+    <string name="MenuItemEdit">Bearbeiten</string>
 </resources>

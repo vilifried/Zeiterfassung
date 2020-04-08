@@ -12,10 +12,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity android:name=".TimeTrackingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -24,11 +24,22 @@
         <activity
             android:name=".ListDataActivity"
             android:label="@string/TimeDataActivityTitle" />
+        <activity
+            android:name=".EditDataActivity"
+            android:label="@string/EditDataActivityTitle">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ListDataActivity" />
+        </activity>
+
 
         <!-- Registrierung des Providers beim OS -->
         <provider
             android:name=".db.TimeDataProvider"
             android:authorities="at.example.zeiterfassung.provider" />
+
+        <!-- Services -->
+        <service android:name=".services.CsvExportService" />
     </application>
 </manifest>
 

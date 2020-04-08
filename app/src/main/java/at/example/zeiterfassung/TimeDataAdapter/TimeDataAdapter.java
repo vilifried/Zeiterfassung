@@ -20,6 +20,8 @@ import java.util.Calendar;
 import at.example.zeiterfassung.R;
 import at.example.zeiterfassung.db.TimeDataContract;
 import at.example.zeiterfassung.dialogs.IConfirmDeleteListener;
+import at.example.zeiterfassung.dialogs.IItemActionListener;
+
 
 public class TimeDataAdapter extends RecyclerView.Adapter<TimeDataAdapter.TimeDataViewHolder> {
     private final Context _context;
@@ -100,6 +102,16 @@ public class TimeDataAdapter extends RecyclerView.Adapter<TimeDataAdapter.TimeDa
                 menu.show();
             }
         });
+
+        // Barbeiten auf Klick
+        timeDataViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (_context instanceof IItemActionListener) {
+                    ((IItemActionListener) _context).editItem(timeDataViewHolder.getItemId(), timeDataViewHolder.getAdapterPosition());
+                }
+            }
+        });
     }
 
     @Override
@@ -150,8 +162,18 @@ public class TimeDataAdapter extends RecyclerView.Adapter<TimeDataAdapter.TimeDa
                     deleteItem(_id, _position);
                     return true;
 
+                case R.id.MenuItemEdit:
+                    editItem(_id, _position);
+                    return true;
+
                 default:
                     return false;
+            }
+        }
+
+        private void editItem(long id, int position) {
+            if (_context instanceof IItemActionListener) {
+                ((IItemActionListener) _context).editItem(id, position);
             }
         }
 

@@ -18,6 +18,7 @@ import java.util.Calendar;
 
 import at.example.zeiterfassung.db.TimeDataContract;
 
+
 public class TimeTrackingActivity extends AppCompatActivity {
     private EditText _startDateTime;
     private EditText _endDateTime;
