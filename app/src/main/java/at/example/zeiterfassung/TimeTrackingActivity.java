@@ -85,6 +85,12 @@ public class TimeTrackingActivity extends AppCompatActivity {
                 Intent listDataIntent = new Intent(this, ListDataActivity.class);
                 startActivity(listDataIntent);
                 return true;
+
+            case R.id.InfoMenuItem:
+                Intent infoIntent = new Intent(this, InfoActivity.class);
+                startActivity(infoIntent);
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

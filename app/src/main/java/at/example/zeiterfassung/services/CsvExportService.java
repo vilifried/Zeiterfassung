@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 
@@ -17,6 +18,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 
 import at.example.zeiterfassung.R;
 import at.example.zeiterfassung.db.TimeDataContract;
@@ -65,6 +68,14 @@ public class CsvExportService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+        // Datei für Export auslesen
+        Uri exportFile = intent.getData();
+
+        // Falls Dateiname nicht gesetzt ist, kein Export
+        if (exportFile == null) {
+            return;
+        }
+
         // System Service für Benachrichtigungen abfragen
         NotificationManagerCompat notifyManager = NotificationManagerCompat.from(getApplicationContext());
         // Gruppe anlegen
@@ -95,29 +106,16 @@ public class CsvExportService extends IntentService {
             // Benachrichtigung veröffentlichen
             notifyManager.notify(_NOTIFICATION_ID, builder.build());
 
-            // Ordner für externe Daten
-            File externalStorage = Environment.getExternalStorageDirectory();
-
-            // Prüfen, ob externe Daten geschrieben werden können (SD Karte nur Read Only oder voll)
-            if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-                return;
-            }
-
-            // Unterordner für unser Export
-            File exportPath = new File(externalStorage, "export");
-
-            // Dateiname für Export
-            File exportFile = new File(exportPath, "TimeDataLog.csv");
-
-            // Erzeugen der ordner, falls noch nicht vorhanden
-            if (!exportFile.exists()) {
-                exportPath.mkdirs();
-            }
 
             // Klasse zum Schreiben der Daten
             BufferedWriter writer = null;
+            // Stream der Datei
+            OutputStream os = null;
             try {
-                writer = new BufferedWriter(new FileWriter(exportFile));
+                // Initialisierung des Streams zum Schreiben aus dem Content Provider
+                os = getContentResolver().openOutputStream(exportFile);
+
+                writer = new BufferedWriter(new OutputStreamWriter(os));
 
                 // Asulesen der Spaltennamen
                 String[] columnList = data.getColumnNames();
@@ -181,6 +179,11 @@ public class CsvExportService extends IntentService {
                         writer.flush();
 
                         writer.close();
+                    }
+
+                    if (os != null) {
+                        os.flush();
+                        os.close();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

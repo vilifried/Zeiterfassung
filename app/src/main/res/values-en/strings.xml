@@ -26,5 +26,6 @@
     <string name="LabelPause">Pause:</string>
     <string name="LabelComment">Comment:</string>
     <string name="MenuItemEdit">Edit</string>
-
+    <string name="MenuInfo">Info</string>
+    <string name="InfoActivityTitle">Info</string>
 </resources>

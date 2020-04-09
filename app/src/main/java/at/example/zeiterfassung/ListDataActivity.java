@@ -30,10 +30,12 @@ import at.example.zeiterfassung.services.CsvExportService;
 
 
 public class ListDataActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, IItemActionListener, IConfirmDeleteListener {
-    private static final int _REQUEST_WRITE_PERMISSION_ID = 100;
     private static final int _LOADER_ID = 100;
     private TimeDataAdapter _adapter = null;
     private RecyclerView _list = null;
+
+    // ID für SAF Dateiabfrage
+    private final static int _SAF_CREATE_EXPORT_FILE = 200;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,23 +74,7 @@ public class ListDataActivity extends AppCompatActivity implements LoaderManager
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.ExportMenuItem:
-                // Abfrage der Berechtigung
-                if (ActivityCompat.checkSelfPermission(
-                        this, // Context
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) == // Benötigte Berechtigung
-                        PackageManager.PERMISSION_GRANTED) { // Status der Berechtigung
-                    // Berechtigung vorhanden, kann exportiert werden
-                    exportCsv();
-                } else {
-                    // Berechtigung vom Benutzer erfragen
-                    ActivityCompat.requestPermissions(
-                            this, // Context
-                            new String[]{
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE // Gewünschte Berechtigungen
-                            },
-                            _REQUEST_WRITE_PERMISSION_ID // ID für Callback
-                    );
-                }
+                selectFileForExport();
                 return true;
 
             default:
@@ -97,25 +83,34 @@ public class ListDataActivity extends AppCompatActivity implements LoaderManager
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        // Prüfen, von welcher Abfrage die Antwort ankommt
-        if (requestCode == _REQUEST_WRITE_PERMISSION_ID) {
-            // Prüfen, ob die Berechtigung erteilt wurde
-            if (Manifest.permission.WRITE_EXTERNAL_STORAGE.equals(permissions[0])
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Berechtigung erteilt, Export kann nun durchgeführt werden
-                exportCsv();
-            }
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode == RESULT_OK && requestCode == _SAF_CREATE_EXPORT_FILE) {
+            // Pfad zur Datei (als Content Provider URI)
+            Uri fileUri = data.getData();
+            exportData(fileUri);
         } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
-    private void exportCsv() {
-        // Service für Export initialisieren
+    private void exportData(Uri fileUri) {
         Intent exportService = new Intent(this, CsvExportService.class);
-        // Service starten
+        // Datei URI an den Service übergeben
+        exportService.setData(fileUri);
         startService(exportService);
+    }
+
+    private void selectFileForExport() {
+        // Aktion, eine neue Datei anzulegen
+        Intent fileIntent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        // Kategorie, um diese Datei dann auch öffnen zu können
+        fileIntent.addCategory(Intent.CATEGORY_OPENABLE);
+        // Datentyp (Mime Type) setzen, als Filter
+        fileIntent.setType("text/csv");
+        // Vorschlag für den Namen der Datei
+        fileIntent.putExtra(Intent.EXTRA_TITLE, "export.csv");
+        // Starten des Intents
+        startActivityForResult(fileIntent, _SAF_CREATE_EXPORT_FILE);
     }
 
     @NonNull
@@ -193,3 +188,5 @@ public class ListDataActivity extends AppCompatActivity implements LoaderManager
         dialog.show(getSupportFragmentManager(), "DeleteDialog");
     }
 }
+
+

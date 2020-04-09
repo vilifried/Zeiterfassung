@@ -4,6 +4,7 @@
     package="at.example.zeiterfassung">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -30,6 +31,15 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ListDataActivity" />
+        </activity>
+        <activity
+            android:name=".InfoActivity"
+            android:label="@string/InfoActivityTitle">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".TimeTrackingActivity" />
+
         </activity>
 
 
