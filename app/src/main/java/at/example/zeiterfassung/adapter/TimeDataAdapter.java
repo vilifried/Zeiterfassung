@@ -1,4 +1,4 @@
-package at.example.zeiterfassung.TimeDataAdapter;
+package at.example.zeiterfassung.adapter;
 
 import android.content.Context;
 import android.database.Cursor;

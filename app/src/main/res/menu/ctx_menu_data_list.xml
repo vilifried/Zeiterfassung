@@ -3,7 +3,6 @@
     <item
         android:id="@+id/MenuItemDelete"
         android:title="@string/MenuItemDelete" />
-
     <item
         android:id="@+id/MenuItemEdit"
         android:title="@string/MenuItemEdit" />

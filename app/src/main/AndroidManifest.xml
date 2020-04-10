@@ -24,7 +24,11 @@
         <!-- Auflistung -->
         <activity
             android:name=".ListDataActivity"
-            android:label="@string/TimeDataActivityTitle" />
+            android:label="@string/TimeDataActivityTitle">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".TimeTrackingActivity" />
+        </activity>
         <activity
             android:name=".EditDataActivity"
             android:label="@string/EditDataActivityTitle">
@@ -35,13 +39,10 @@
         <activity
             android:name=".InfoActivity"
             android:label="@string/InfoActivityTitle">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".TimeTrackingActivity" />
-
         </activity>
-
 
         <!-- Registrierung des Providers beim OS -->
         <provider

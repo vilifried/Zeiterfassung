@@ -1,11 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<WebView xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/WebContent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingStart="@dimen/ActivityHorizontalPadding"
-    android:paddingTop="@dimen/ActivityVerticalPadding"
-    android:paddingEnd="@dimen/ActivityHorizontalPadding"
-    android:paddingBottom="@dimen/ActivityVerticalPadding"
-    tools:context=".InfoActivity"></WebView>
+    tools:context=".InfoActivity">>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/IssueList"
+        android:layout_width="409dp"
+        android:layout_height="729dp"
+        android:layout_marginStart="@dimen/ActivityHorizontalPadding"
+        android:layout_marginTop="@dimen/ActivityHorizontalPadding"
+        android:layout_marginEnd="@dimen/ActivityHorizontalPadding"
+        android:layout_marginBottom="@dimen/ActivityHorizontalPadding"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

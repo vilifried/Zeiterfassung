@@ -16,6 +16,7 @@ public final class TimeDataContract {
      */
     public static final String AUTHORITY = "at.example.zeiterfassung.provider";
 
+
     /**
      * Basis URI zu dem Content Provider
      */
@@ -82,6 +83,58 @@ public final class TimeDataContract {
              * Kommentar zu der Aufzeichnung
              */
             String COMMENT = "comment";
+        }
+    }
+
+    /**
+     * Kontrakt für Fehler
+     */
+    public static final class IssueData {
+        /**
+         * Unterverzeichnis für Fehlertickets
+         */
+        public static final String CONTENT_DIRECTORY = "issues";
+
+        /**
+         * Uri zu den Fehlerdaten
+         */
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(AUTHORITY_URI, CONTENT_DIRECTORY);
+
+        /**
+         * Datentyp für die Fehlerliste
+         */
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
+                + "/" + CONTENT_DIRECTORY;
+
+        /**
+         * Datentyp für ein Fehler
+         */
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
+                + "/" + CONTENT_DIRECTORY;
+
+        /**
+         * Verfügbare Spalten
+         */
+        public interface Columns extends BaseColumns {
+            /**
+             * Nummer des Tickets
+             */
+            String NUMBER = "number";
+
+            /**
+             * Titel des Tickets
+             */
+            String TITLE = "titel";
+
+            /**
+             * Priorität des Tickets
+             */
+            String PRIORITY = "priority";
+
+            /**
+             * Status des Tickets
+             */
+            String STATE = "state";
         }
     }
 

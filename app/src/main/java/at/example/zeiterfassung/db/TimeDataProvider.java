@@ -36,10 +36,23 @@ public class TimeDataProvider extends ContentProvider {
                 TimeDataContract.AUTHORITY, // Basis Uri
                 TimeDataContract.TimeData.NOT_FINISHED_CONTENT_DIRECTORY, // Unterverzeichnis
                 TimeDataTable.NOT_FINISHED_ITEM_ID); // ID für offenen Datensatz
+
+        // Lookup für die Auflistung (Fehler)
+        _URI_MATCHER.addURI(
+                TimeDataContract.AUTHORITY, // Basis-Uri
+                TimeDataContract.IssueData.CONTENT_DIRECTORY, // Unterverzeichnis der Daten
+                IssueDataTable.ITEM_LIST_ID); // Eindeutige ID
+
+        // Lookup für ein Datensatz (Fehler)
+        _URI_MATCHER.addURI(
+                TimeDataContract.AUTHORITY, // Basis-Uri
+                TimeDataContract.IssueData.CONTENT_DIRECTORY + "/#", // Unterverzeichnis mit ID des Datensatzes
+                IssueDataTable.ITEM_ID); // Eindeutige ID
     }
 
     private DbHelper _dbHelper = null;
     private static final String _ID_WHERE = BaseColumns._ID + "=?";
+    private static final String _NUMBER_WHERE = TimeDataContract.IssueData.Columns.NUMBER + "=?";
     private static final String _NOT_FINISHED_WHERE = "IFNULL("
             + TimeDataContract.TimeData.Columns.END_TIME
             + ",'')=''";
@@ -71,6 +84,15 @@ public class TimeDataProvider extends ContentProvider {
                 data = db.query(TimeDataTable.TABLE_NAME, projection, _NOT_FINISHED_WHERE, null, null, null, sortOrder);
                 break;
 
+            case IssueDataTable.ITEM_LIST_ID:
+                data = db.query(IssueDataTable.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+
+            case IssueDataTable.ITEM_ID:
+                final long number = ContentUris.parseId(uri);
+                data = db.query(IssueDataTable.TABLE_NAME, projection, _NUMBER_WHERE, idAsArray(number), null, null, null);
+                break;
+
             default:
                 throw new IllegalArgumentException(String.format(Locale.GERMANY, "Unbekannte URI: %s", uri));
         }
@@ -99,6 +121,14 @@ public class TimeDataProvider extends ContentProvider {
             case TimeDataTable.NOT_FINISHED_ITEM_ID:
                 type = TimeDataContract.TimeData.CONTENT_ITEM_TYPE;
                 break;
+
+            case IssueDataTable.ITEM_ID:
+                type = TimeDataContract.IssueData.CONTENT_ITEM_TYPE;
+                break;
+
+            case IssueDataTable.ITEM_LIST_ID:
+                type = TimeDataContract.IssueData.CONTENT_TYPE;
+                break;
         }
 
         return type;
@@ -113,21 +143,32 @@ public class TimeDataProvider extends ContentProvider {
         // Initialisieren der Werte
         Uri insertUri = null;
         long newItemId = -1;
+        SQLiteDatabase db = _dbHelper.getWritableDatabase();
 
-        // Bestimmen der Aktionen für die gefundene Uri
-        switch (uriType) {
-            case TimeDataTable.ITEM_LIST_ID:
-            case TimeDataTable.ITEM_ID:
-            case TimeDataTable.NOT_FINISHED_ITEM_ID:
-                SQLiteDatabase db = _dbHelper.getWritableDatabase();
-                newItemId = db.insert(TimeDataTable.TABLE_NAME, null, values);
-                db.close();
-                break;
+        try {
+            // Bestimmen der Aktionen für die gefundene Uri
+            switch (uriType) {
+                case TimeDataTable.ITEM_LIST_ID:
+                case TimeDataTable.ITEM_ID:
+                case TimeDataTable.NOT_FINISHED_ITEM_ID:
+                    newItemId = db.insert(TimeDataTable.TABLE_NAME, null, values);
+                    break;
 
-            default:
-                // Ausnahme erzeugen, da wir die Uri nicht kennen
-                throw new IllegalArgumentException(String.format(Locale.GERMANY, "Unbekannte URI: %s", uri));
+                case IssueDataTable.ITEM_ID:
+                case IssueDataTable.ITEM_LIST_ID:
+                    db.insert(IssueDataTable.TABLE_NAME, null, values);
+                    newItemId = values.getAsLong(TimeDataContract.IssueData.Columns.NUMBER);
+                    break;
+
+                default:
+                    // Ausnahme erzeugen, da wir die Uri nicht kennen
+                    throw new IllegalArgumentException(String.format(Locale.GERMANY, "Unbekannte URI: %s", uri));
+            }
+        } finally {
+            // Datenbak freigeben
+            //db.close();
         }
+
 
         // Datensatz erfogreich hinzugefügt
         if (newItemId > 0) {
@@ -149,29 +190,38 @@ public class TimeDataProvider extends ContentProvider {
         int deletedItems = 0;
         SQLiteDatabase db = _dbHelper.getWritableDatabase();
 
-        // Bestimmen der Aktionen, abhängig vom Typ
-        switch (uriType) {
-            case TimeDataTable.ITEM_LIST_ID:
-                deletedItems = db.delete(TimeDataTable.TABLE_NAME, selection, selectionArgs);
-                // Datenbak freigeben
-                db.close();
-                break;
+        try {
+            // Bestimmen der Aktionen, abhängig vom Typ
+            switch (uriType) {
+                case TimeDataTable.ITEM_LIST_ID:
+                    deletedItems = db.delete(TimeDataTable.TABLE_NAME, selection, selectionArgs);
+                    break;
 
-            case TimeDataTable.ITEM_ID:
-                final long id = ContentUris.parseId(uri);
-                deletedItems = db.delete(TimeDataTable.TABLE_NAME, _ID_WHERE, idAsArray(id));
-                // Datenbak freigeben
-                db.close();
-                break;
+                case TimeDataTable.ITEM_ID:
+                    final long id = ContentUris.parseId(uri);
+                    deletedItems = db.delete(TimeDataTable.TABLE_NAME, _ID_WHERE, idAsArray(id));
+                    break;
 
-            case TimeDataTable.NOT_FINISHED_ITEM_ID:
-                deletedItems = db.delete(TimeDataTable.TABLE_NAME, _NOT_FINISHED_WHERE, null);
-                db.close();
-                break;
+                case TimeDataTable.NOT_FINISHED_ITEM_ID:
+                    deletedItems = db.delete(TimeDataTable.TABLE_NAME, _NOT_FINISHED_WHERE, null);
+                    break;
 
-            default:
-                // Ausnahme erzeugen, da wir die Uri nicht kennen
-                throw new IllegalArgumentException(String.format(Locale.GERMANY, "Unbekannte URI: %s", uri));
+                case IssueDataTable.ITEM_LIST_ID:
+                    deletedItems = db.delete(IssueDataTable.TABLE_NAME, selection, selectionArgs);
+                    break;
+
+                case IssueDataTable.ITEM_ID:
+                    final long number = ContentUris.parseId(uri);
+                    deletedItems = db.delete(IssueDataTable.TABLE_NAME, _NUMBER_WHERE, idAsArray(number));
+                    break;
+
+                default:
+                    // Ausnahme erzeugen, da wir die Uri nicht kennen
+                    throw new IllegalArgumentException(String.format(Locale.GERMANY, "Unbekannte URI: %s", uri));
+            }
+        } finally {
+            // Datenbak freigeben
+            //db.close();
         }
 
         // Datensätze erfolgreich gelöscht
@@ -189,25 +239,36 @@ public class TimeDataProvider extends ContentProvider {
         int updateItems = 0;
         SQLiteDatabase db = _dbHelper.getWritableDatabase();
 
-        switch (uriType) {
-            case TimeDataTable.ITEM_LIST_ID:
-                updateItems = db.update(TimeDataTable.TABLE_NAME, values, selection, selectionArgs);
-                db.close();
-                break;
+        try {
+            switch (uriType) {
+                case TimeDataTable.ITEM_LIST_ID:
+                    updateItems = db.update(TimeDataTable.TABLE_NAME, values, selection, selectionArgs);
+                    break;
 
-            case TimeDataTable.ITEM_ID:
-                final long id = ContentUris.parseId(uri);
-                updateItems = db.update(TimeDataTable.TABLE_NAME, values, _ID_WHERE, idAsArray(id));
-                db.close();
-                break;
+                case TimeDataTable.ITEM_ID:
+                    final long id = ContentUris.parseId(uri);
+                    updateItems = db.update(TimeDataTable.TABLE_NAME, values, _ID_WHERE, idAsArray(id));
+                    break;
 
-            case TimeDataTable.NOT_FINISHED_ITEM_ID:
-                updateItems = db.update(TimeDataTable.TABLE_NAME, values, _NOT_FINISHED_WHERE, null);
-                db.close();
-                break;
+                case TimeDataTable.NOT_FINISHED_ITEM_ID:
+                    updateItems = db.update(TimeDataTable.TABLE_NAME, values, _NOT_FINISHED_WHERE, null);
+                    break;
 
-            default:
-                throw new IllegalArgumentException(String.format(Locale.GERMANY, "Unbekannte URI: %s", uri));
+                case IssueDataTable.ITEM_LIST_ID:
+                    updateItems = db.update(IssueDataTable.TABLE_NAME, values, selection, selectionArgs);
+                    break;
+
+                case IssueDataTable.ITEM_ID:
+                    final long number = ContentUris.parseId(uri);
+                    updateItems = db.update(IssueDataTable.TABLE_NAME, values, _NUMBER_WHERE, idAsArray(number));
+                    break;
+
+                default:
+                    throw new IllegalArgumentException(String.format(Locale.GERMANY, "Unbekannte URI: %s", uri));
+            }
+        } finally {
+            // Datenbak freigeben
+            //db.close();
         }
 
         if (updateItems > 0) {

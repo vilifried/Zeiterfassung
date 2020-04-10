@@ -1,10 +1,8 @@
 package at.example.zeiterfassung;
 
 
-import android.Manifest;
 import android.content.ContentUris;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,14 +12,13 @@ import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import at.example.zeiterfassung.TimeDataAdapter.TimeDataAdapter;
+import at.example.zeiterfassung.adapter.TimeDataAdapter;
 import at.example.zeiterfassung.db.TimeDataContract;
 import at.example.zeiterfassung.dialogs.DeleteTimeDataDialog;
 import at.example.zeiterfassung.dialogs.IConfirmDeleteListener;
@@ -188,5 +185,3 @@ public class ListDataActivity extends AppCompatActivity implements LoaderManager
         dialog.show(getSupportFragmentManager(), "DeleteDialog");
     }
 }
-
-

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/ListItemHorizontalPadding"
+    android:paddingTop="@dimen/ListItemVerticalPadding"
+    android:paddingEnd="@dimen/ListItemHorizontalPadding">
+
+    <TextView
+        android:id="@+id/NumberValue"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:minWidth="50dp"
+        android:paddingStart="@dimen/ActivityHorizontalPadding"
+        android:paddingLeft="@dimen/ActivityHorizontalPadding"
+        android:paddingTop="@dimen/ActivityVerticalPadding"
+        android:paddingEnd="@dimen/ActivityHorizontalPadding"
+        android:paddingRight="@dimen/ActivityHorizontalPadding"
+        android:paddingBottom="@dimen/ActivityVerticalPadding"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="1" />
+
+    <TextView
+        android:id="@+id/TitleValue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:paddingBottom="@dimen/RowPaddingTop"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/NumberValue"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Titel des Issue" />
+
+    <TextView
+        android:id="@+id/PriorityValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/ListItemColumnPadding"
+        android:paddingBottom="@dimen/ListItemVerticalPadding"
+        app:layout_constraintStart_toEndOf="@+id/NumberValue"
+        app:layout_constraintTop_toBottomOf="@+id/TitleValue"
+        tools:text="heigh" />
+
+    <TextView
+        android:id="@+id/StateValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="?attr/dialogPreferredPadding"
+        android:paddingRight="?attr/dialogPreferredPadding"
+        android:paddingBottom="@dimen/ListItemVerticalPadding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/PriorityValue"
+        app:layout_constraintTop_toBottomOf="@+id/TitleValue"
+        tools:text="new" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ListItemRowRuleHeight"
+        android:background="@color/colorAccent"
+        android:paddingBottom="@dimen/ListItemVerticalPadding"
+        app:layout_constraintTop_toBottomOf="@+id/PriorityValue" />
+</androidx.constraintlayout.widget.ConstraintLayout>
